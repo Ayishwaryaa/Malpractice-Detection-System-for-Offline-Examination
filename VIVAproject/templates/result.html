@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detected Devices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="/static/result.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="btn-container">
+        <button class="logout-btn" onclick="window.location.href='/back'">Back</button>
+        <button class="logout-btn" id="logout-btn" onclick="window.location.href='/logout'">Logout</button>
+        
+    </div>
+
+    <div class="container">
+        <h1>Detected Devices</h1>
+        <!-- <p><strong>Room Radius:</strong> {{ radius }}</p> -->
+
+        <p>List of WiFi and Bluetooth devices detected during scanning session.</p>
+
+        <div class="scrollable-table">
+            <table id="device-table">
+                <thead>
+                    <tr>
+                        <th>Device</th>
+                        <th>Signal Type</th>
+                        <th>Strength</th>
+                        <th>Connection</th>
+                        <th>RSSI (dBm)</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for device in wifi %}
+                    <tr>
+                        <td><i class="fas fa-wifi icon"></i><br>{{ device['ssid'] }}</td>
+                        <td><span class="tag wifi">WiFi</span></td>
+                        <td>
+                            {% set signal = device['signal'].replace('%','')|int %}
+                            {% if signal > 70 %}
+                            <span class="tag good">{{ device['signal'] }} - Good</span>
+                            {% elif signal > 40 %}
+                            <span class="tag fair">{{ device['signal'] }} - Fair</span>
+                            {% else %}
+                            <span class="tag average">{{ device['signal'] }} - Average</span>
+                            {% endif %}
+
+
+                            {% if device.get('distance') and radius %}
+                            {% set status_class = 'inside-classroom' if device['distance'] <= radius
+                                else 'outside-classroom' %} <br>
+                                <strong class="{{ status_class }}">
+                                    {{ "Detected inside Classroom" if device['distance'] <= radius
+                                        else "Detected outside Classroom" }} </strong>
+                                        {% endif %}
+
+
+                        </td>
+                        <td><i class="fas fa-link icon"></i><br>WiFi Connection</td>
+                        <td>N/A</td>
+                        <td>{{ device['timestamp'] }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    {% for name, address, distance, rssi, signal_type, timestamp in ble %}
+                    <tr>
+                        <td><i class="fab fa-bluetooth-b icon"></i><br>{{ name }}</td>
+                        <td><span class="tag bluetooth">{{ signal_type }}</span></td>
+                        <td>
+                            {% if distance < 1 %} <span class="tag good">{{ distance }} m - Very Close</span>
+                                {% elif 1 <= distance <=3 %} <span class="tag fair">{{ distance }} m - Close</span>
+                                    {% elif 4 <= distance <=6 %} <span class="tag average">{{ distance }} m -
+                                        Moderate</span>
+                                        {% elif 7 <= distance <=10 %} <span class="tag weak">{{ distance }} m -
+                                            Far</span>
+                                            {% else %}
+                                            <span class="tag veryweak">{{ distance }} m - Very Far</span>
+                                            {% endif %}
+
+
+                                            {% if distance and radius %}
+                                            {% set status_class = 'inside-classroom' if distance <= radius
+                                                else 'outside-classroom' %} <br>
+                                                <strong class="{{ status_class }}">
+                                                    {{ "Detected inside Classroom" if distance <= radius
+                                                        else "Detected outside Classroom" }} </strong>
+                                                        {% endif %}
+
+
+                        </td>
+                        <td><i class="fas fa-link icon"></i><br>Bluetooth Connection</td>
+                        <td>{{ rssi }}</td>
+                        <td>{{ timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        function downloadCSV() {
+            let csv = [];
+            const rows = document.querySelectorAll("table tr");
+            for (let row of rows) {
+                let cols = row.querySelectorAll("th, td");
+                let rowData = [];
+                for (let col of cols) {
+                    rowData.push(col.innerText.trim().replace(/\n/g, " "));
+                }
+                csv.push(rowData.join(","));
+            }
+
+            const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.setAttribute("hidden", "");
+            a.setAttribute("href", url);
+            a.setAttribute("download", "detected_devices.csv");
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+    <div class="downloads" >
+        <button class="download-btn" onclick="downloadCSV()">Download CSV</button>
+        <button class="download-btn" onclick="window.location.href='/download_cheating_frames'">Download Cheating Frames</button>
+    
+        
+    </div>
+</body>
+
+</html>

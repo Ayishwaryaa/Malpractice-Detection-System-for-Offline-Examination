@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Malpractice Detection System</title>
+    <link rel="stylesheet" href="/static/index.css">
+
+</head>
+
+<body>
+    <div class="btn-container">
+        <button class="logout-btn" id="logout-btn" onclick="window.location.href='/logout'">Logout</button>
+    </div>
+    <div class="container">
+        <h1>Malpractice detection system</h1>
+        <div class="inputs-center">
+            <div class="input-row" style="margin-bottom: 20px;">
+                <label for="roomWidth">Classroom Width (In meters): </label>
+                <input type="number" id="roomWidth" placeholder="e.g., 6" min="1" step="0.1"><br><br>
+
+                <label for="roomLength">Classroom Length (In meters): </label>
+                <input type="number" id="roomLength" placeholder="e.g., 8" min="1" step="0.1">
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="video-section">
+                <h3>Live CCTV Footage</h3>
+                <video id="video" autoplay="true" playsinline="true"></video>
+            </div>
+
+            <div class="device-section">
+                <div class="device-card">
+                    <div class="device-header">
+                        <h3>Bluetooth Devices</h3>
+                        <button class="refresh-button" onclick="fetchBLEDevices()">&#x21bb;</button>
+                    </div>
+                    <ul id="bleList" class="device-list">Value</ul>
+                </div>
+
+                <div class="device-card">
+                    <div class="device-header">
+                        <h3>Wifi Connections</h3>
+                        <button class="refresh-button" onclick="fetchWiFiNetworks()">&#x21bb;</button>
+                    </div>
+                    <ul id="wifiList" class="device-list">Value</ul>
+                </div>
+
+                <div class="device-card">
+                    <div class="device-header">
+                        <h3>Voice Detection</h3>
+                        <button class="refresh-button" onclick="">&#x21bb;</button>
+                    </div>
+                    <ul id="voiceList" class="device-list">
+                        <p id="output">value</p>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="startDetection()" id="start">▶️ Start Detection</button>
+            <button onclick="stopDetection()" id="stop" style="display: none;">🛑 Stop Detection</button>
+        </div>
+    </div>
+
+    <div id="notification-container" class="notification-container"></div>
+
+    <script src="/static/script.js"></script>
+    <script src="/static/client.js"></script>
+</body>
+
+</html>

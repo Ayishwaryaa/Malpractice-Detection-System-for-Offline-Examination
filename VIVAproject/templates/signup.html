@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/static/signup.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Sign Up</h2>
+
+        {% if message %}
+        <p style="color: red;">{{ message }}</p>
+        {% endif %}
+
+        <form method="post">
+            <div class="card">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <br><br>
+            </div>
+            <div class="card">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <br><br>
+            </div>
+            <div class="card">
+                <label for="phone">Phone (optional):</label>
+                <input type="text" id="phone" name="phone">
+                <br><br>
+            </div>
+            <div class="card">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <br><br>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{{ request.url_for('signin') }}">Sign In</a></p>
+    </div>
+</body>
+
+</html>
+
+
